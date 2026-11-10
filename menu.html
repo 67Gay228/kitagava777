@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Меню — Китагава</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="shared.css">
+</head>
+<body>
+    <header>
+        <a href="index.html" class="logo">КИТАГАВА<span>.</span></a>
+        <nav>
+            <ul>
+                <li><a href="index.html">Главная</a></li>
+                <li><a href="menu.html" class="active">Меню</a></li>
+                <li><a href="news.html">Новости</a></li>
+                <li><a href="reviews.html">Отзывы</a></li>
+                <li>
+                    <button class="cart-btn" id="openCartBtn">
+                        Корзина <span class="cart-count" id="cartCount">0</span>
+                    </button>
+                </li>
+                <li><a href="admin.html" class="admin-link" title="Админка">⚙️</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <div class="categories-container" id="categories">
+        <button class="category-pill active" data-category="all">Все</button>
+        <button class="category-pill" data-category="rolls">Роллы</button>
+        <button class="category-pill" data-category="sushi">Суси</button>
+        <button class="category-pill" data-category="wok">WOK</button>
+        <button class="category-pill" data-category="soups">Супы</button>
+        <button class="category-pill" data-category="hot">Закуски</button>
+        <button class="category-pill" data-category="pizza">Пицца</button>
+        <button class="category-pill" data-category="desserts">Десерты</button>
+    </div>
+
+    <section class="page-section">
+        <div class="menu-grid" id="menuGrid"></div>
+    </section>
+
+    <!-- CART SIDEBAR -->
+    <div class="cart-overlay" id="cartOverlay"></div>
+    <aside class="cart-sidebar" id="cartSidebar">
+        <div class="cart-header">
+            <h3>Ваш заказ</h3>
+            <button class="close-btn" id="closeCartBtn">×</button>
+        </div>
+        <div class="cart-items" id="cartItems"></div>
+        <div class="cart-footer">
+            <div class="cart-total">
+                <span>Итого:</span>
+                <span id="cartTotal">0 ₽</span>
+            </div>
+            <button class="checkout-btn" id="checkoutBtn">Оформить заказ</button>
+        </div>
+    </aside>
+
+    <footer>
+        <a href="index.html" class="logo">КИТАГАВА<span>.</span></a>
+        <p>Доставка суши и роллов. © 2026. Все права защищены.</p>
+    </footer>
+
+    <script src="shared.js"></script>
+</body>
+</html>

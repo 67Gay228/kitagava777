@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Админка — Китагава</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="shared.css">
+    <style>
+        /* Дополнительные стили для таблиц и форм в админке */
+        .admin-table { width: 100%; border-collapse: collapse; background: var(--surface-color); border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); margin-top: 20px; }
+        .admin-table th, .admin-table td { padding: 15px 20px; text-align: left; border-bottom: 1px solid var(--border-color); font-size: 0.9rem; }
+        .admin-table th { background: var(--bg-color); font-weight: 600; color: var(--text-muted); }
+        .admin-table tr:last-child td { border-bottom: none; }
+        .status-badge { padding: 4px 10px; border-radius: 50px; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; }
+        .status-new { background: #e3f2fd; color: #1565c0; }
+        .status-cooking { background: #fff3e0; color: #e65100; }
+        .status-delivering { background: #f3e5f5; color: #7b1fa2; }
+        .status-done { background: #e8f5e9; color: #2e7d32; }
+        .status-cancelled { background: #ffebee; color: #c62828; }
+        .action-btn { background: none; border: 1px solid var(--border-color); padding: 6px 12px; border-radius: 8px; cursor: pointer; font-size: 0.8rem; margin-right: 5px; transition: var(--transition); }
+        .action-btn:hover { background: var(--bg-color); }
+        .action-btn.danger:hover { border-color: var(--accent-color); color: var(--accent-color); }
+        .admin-form { background: var(--surface-color); padding: 25px; border-radius: var(--radius); border: 1px solid var(--border-color); margin-bottom: 20px; display: flex; gap: 15px; align-items: flex-end; flex-wrap: wrap; }
+        .admin-form .form-group { flex: 1; min-width: 150px; margin-bottom: 0; }
+        .admin-form select { padding: 14px; border-radius: 12px; border: 1px solid var(--border-color); background: var(--bg-color); width: 100%; }
+    </style>
+</head>
+<body class="admin-page">
+
+    <!-- ЭКРАН ЛОГИНА -->
+    <div class="admin-login" id="loginScreen">
+        <div class="login-card">
+            <h2>Вход в панель</h2>
+            <p>Введите логин и пароль</p>
+            <input type="text" id="loginUser" placeholder="Логин">
+            <input type="password" id="loginPass" placeholder="Пароль">
+            <button class="btn" onclick="tryLogin()">Войти</button>
+            <p style="margin-top:20px; font-size:0.8rem; color:#999;">
+                admin / admin123<br>
+                manager / manager123<br>
+                operator / operator123<br>
+                news / news123
+            </p>
+            <a href="index.html" style="display:block; margin-top:20px; font-size:0.9rem; color:var(--text-main); text-decoration:underline;">← На сайт</a>
+        </div>
+    </div>
+
+    <!-- ПАНЕЛЬ УПРАВЛЕНИЯ -->
+    <div class="admin-panel" id="adminPanel">
+        <div class="admin-header">
+            <h2>Панель управления</h2>
+            <div class="admin-user" id="adminUserInfo"></div>
+            <div>
+                <button class="action-btn" onclick="logout()">Выйти</button>
+                <a href="index.html" class="action-btn">На сайт</a>
+            </div>
+        </div>
+        
+        <div class="admin-tabs" id="adminTabs"></div>
+
+        <div class="admin-content">
+            <!-- ДАШБОРД -->
+            <div class="tab-content" id="tab-dashboard">
+                <h3>Дашборд</h3>
+                <div class="stats-grid">
+                    <div class="stat-card"><div class="label">Выручка сегодня</div><div class="value">125 000 ₽</div></div>
+                    <div class="stat-card"><div class="label">Заказов сегодня</div><div class="value">42</div></div>
+                </div>
+            </div>
+
+            <!-- ЗАКАЗЫ -->
+            <div class="tab-content" id="tab-orders">
+                <h3>Управление заказами</h3>
+                <table class="admin-table">
+                    <thead><tr><th>ID</th><th>Клиент</th><th>Сумма</th><th>Статус</th><th>Изменить статус</th></tr></thead>
+                    <tbody id="adminOrdersTable"></tbody>
+                </table>
+            </div>
+
+            <!-- МЕНЮ -->
+            <div class="tab-content" id="tab-menu">
+                <h3>Управление меню</h3>
+                <div class="admin-form">
+                    <div class="form-group">
+                        <label>Название</label>
+                        <input type="text" id="newTitle" class="form-control" placeholder="Например: Филадельфия">
+                    </div>
+                    <div class="form-group">
+                        <label>Цена</label>
+                        <input type="number" id="newPrice" class="form-control" placeholder="790">
+                    </div>
+                    <div class="form-group">
+                        <label>Категория</label>
+                        <select id="newCategory">
+                            <option value="rolls">Роллы</option>
+                            <option value="sushi">Суси</option>
+                            <option value="wok">WOK</option>
+                            <option value="soups">Супы</option>
+                            <option value="hot">Закуски</option>
+                            <option value="pizza">Пицца</option>
+                            <option value="desserts">Десерты</option>
+                        </select>
+                    </div>
+                    <button class="btn" onclick="addMenuItem()">Добавить</button>
+                </div>
+                <table class="admin-table">
+                    <thead><tr><th>Фото</th><th>Название</th><th>Цена</th><th>Действия</th></tr></thead>
+                    <tbody id="adminMenuTable"></tbody>
+                </table>
+            </div>
+
+            <!-- ОТЗЫВЫ -->
+            <div class="tab-content" id="tab-reviews">
+                <h3>Модерация отзывов</h3>
+                <div id="adminReviewsList"></div>
+            </div>
+
+            <!-- НОВОСТИ -->
+            <div class="tab-content" id="tab-news">
+                <h3>Управление новостями</h3>
+                <div class="admin-form" style="flex-direction:column; align-items:stretch;">
+                    <div class="form-group">
+                        <label>Заголовок</label>
+                        <input type="text" id="newsTitle" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label>Текст</label>
+                        <textarea id="newsText" class="form-control"></textarea>
+                    </div>
+                    <button class="btn" onclick="addNews()" style="align-self:flex-start; margin-top:15px;">Опубликовать</button>
+                </div>
+                <table class="admin-table">
+                    <thead><tr><th>Заголовок</th><th>Опубликовано</th><th>Действия</th></tr></thead>
+                    <tbody id="adminNewsList"></tbody>
+                </table>
+            </div>
+
+            <!-- ЮЗЕРЫ -->
+            <div class="tab-content" id="tab-users">
+                <h3>Пользователи</h3>
+                <div class="admin-form">
+                    <div class="form-group"><label>Имя</label><input type="text" id="userName" class="form-control"></div>
+                    <div class="form-group"><label>Логин</label><input type="text" id="userLogin" class="form-control"></div>
+                    <div class="form-group"><label>Пароль</label><input type="text" id="userPass" class="form-control"></div>
+                    <div class="form-group">
+                        <label>Роль</label>
+                        <select id="userRole">
+                            <option value="manager">Менеджер</option>
+                            <option value="operator">Оператор</option>
+                            <option value="news">Новости</option>
+                            <option value="admin">Админ</option>
+                        </select>
+                    </div>
+                    <button class="btn" onclick="addUser()">Добавить</button>
+                </div>
+                <table class="admin-table">
+                    <thead><tr><th>Имя</th><th>Логин</th><th>Роль</th><th>Действия</th></tr></thead>
+                    <tbody id="adminUsersList"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script src="shared.js"></script>
+</body>
+</html>
